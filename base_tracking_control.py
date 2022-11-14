@@ -116,21 +116,22 @@ class MultiVehiclesControl(object):
         
         return traj, cx, cy, cyaw
 
-    def TestTwoLinearTrajectory(self, start_x, end_x, y): #20221114 TaoMin
+    def TestTwoLinearTrajectory(self, start_x, end_x, y, angle_): #20221114 TaoMin
         
         # 直线轨迹
-        yaw_angle = math.pi * 0.25 #45度
+        #yaw_angle = math.pi * 0.25 #45度
         mid_x = (start_x + end_x) / 2
-        cx1 = np.linspace(start_x, mid_x, 1000, endpoint = False)
+
+        cx1 = np.linspace(start_x, mid_x, 1000, endpoint = False)        
         cx1 = cx1.tolist()
-        cy1 = [y] * len(cx1)
-        cyaw1 = [0] * len(cx1)
+        cy1 = np.linspace(y - (mid_x - start_x) * math.tan(angle_), y, 1000, endpoint = False)
+        cy1 = cy1.tolist()
+        cyaw1 = [angle_] * len(cx1)
 
         cx2 = np.linspace(mid_x, end_x, 1000, endpoint = False)
         cx2 = cx2.tolist()
-        cy2 = np.linspace(y, y + (end_x - mid_x) * math.tan(yaw_angle), 1000, endpoint = False)
-        cy2 = cy2.tolist()
-        cyaw2 = [yaw_angle] * len(cx1)
+        cy2 = [y] * len(cx2)
+        cyaw2 = [0] * len(cx2)
 
         cx = cx1 + cx2
         cy = cy1 + cy2
@@ -200,7 +201,8 @@ class MultiVehiclesControl(object):
                     _, cx, cy, cyaw = self.TestTwoLinearTrajectory(-1,1,0)
                 elif id == '3':
                     # _, cx, cy, cyaw = self.TestLinearTrajectory(-1,1,-0.26)
-                    _, cx, cy, cyaw = self.TestTwoLinearTrajectory(-1,1,-0.26)
+                    angle = math.pi / 4
+                    _, cx, cy, cyaw = self.TestTwoLinearTrajectory(-1,1,0,angle)
                 elif id == '4':
                     # _, cx, cy, cyaw = self.TestLinearTrajectory(-1,1,-0.52)
                     _, cx, cy, cyaw = self.TestTwoLinearTrajectory(-1,1,-0.52)
